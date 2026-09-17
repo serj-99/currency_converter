@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Конвертер валют",
-  "version": "1.0.0",
-  "description": "Конвертация рублей, евро, долларов США и тенге по онлайн-курсу.",
+  "version": "1.1.0",
+  "description": "Конвертация рублей, евро, долларов США и тенге по курсу Банка России.",
   "action": {
     "default_title": "Конвертер валют",
     "default_popup": "popup.html",
@@ -12,7 +12,7 @@
     "48": "icon.svg"
   },
   "host_permissions": [
-    "https://api.frankfurter.dev/*"
+    "https://www.cbr.ru/*"
   ],
   "browser_specific_settings": {
     "gecko": {

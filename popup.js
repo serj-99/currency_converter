@@ -58,36 +58,38 @@ function render() {
     label.textContent = `${names[code]} · ${code}`;
 
     const value = document.createElement("strong");
-    value.textContent = formatAmount((amount / sourceRate) * rates[code]);
+    value.textContent = formatAmount((amount * sourceRate) / rates[code]);
 
     row.append(label, value);
     results.append(row);
   }
 
-  status.textContent = `Курс на ${rates.date} · Frankfurter`;
+  status.textContent = `Официальный курс на ${rates.date} · Банк России`;
 }
 
 async function loadRates() {
   try {
     const response = await fetch(
-      "https://api.frankfurter.dev/v2/rates?base=USD&quotes=RUB,EUR,KZT",
+      "https://www.cbr.ru/scripts/XML_daily.asp",
       { cache: "no-store" }
     );
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    const rows = await response.json();
-    if (!Array.isArray(rows)) throw new Error("Неверный формат ответа");
+    const xmlText = new TextDecoder("windows-1251").decode(await response.arrayBuffer());
+    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
+    if (xml.documentElement.nodeName !== "ValCurs" || xml.querySelector("parsererror")) {
+      throw new Error("Неверный формат ответа");
+    }
 
-    const nextRates = { USD: 1 };
-    for (const row of rows) {
-      if (
-        currencies.includes(row.quote) &&
-        row.base === "USD" &&
-        Number.isFinite(row.rate) &&
-        row.rate > 0
-      ) {
-        nextRates[row.quote] = row.rate;
-        nextRates.date = row.date;
+    const nextRates = { RUB: 1, date: xml.documentElement.getAttribute("Date") };
+    for (const valute of xml.getElementsByTagName("Valute")) {
+      const code = valute.getElementsByTagName("CharCode")[0]?.textContent?.trim();
+      if (!currencies.includes(code) || code === "RUB") continue;
+
+      const nominal = Number(valute.getElementsByTagName("Nominal")[0]?.textContent);
+      const value = Number(valute.getElementsByTagName("Value")[0]?.textContent?.replace(",", "."));
+      if (Number.isFinite(nominal) && nominal > 0 && Number.isFinite(value) && value > 0) {
+        nextRates[code] = value / nominal;
       }
     }
     if (!currencies.every((code) => nextRates[code] > 0) || !nextRates.date) {
