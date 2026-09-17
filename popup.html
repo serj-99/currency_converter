@@ -15,6 +15,19 @@
         font: 14px/1.45 system-ui, sans-serif;
       }
       h1 { margin: 0 0 18px; font-size: 20px; }
+      .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+      .icon-button {
+        width: 32px;
+        height: 32px;
+        padding: 4px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #344b68;
+        cursor: pointer;
+      }
+      .icon-button:hover { background: #e5ecf5; }
+      .icon-button svg { display: block; width: 24px; height: 24px; }
       label { display: block; margin-bottom: 7px; font-weight: 600; }
       .input-row { display: flex; gap: 8px; }
       input, select {
@@ -42,25 +55,63 @@
       .result-label { color: #4a596c; }
       .result strong { overflow-wrap: anywhere; text-align: right; font-size: 16px; }
       #status { min-height: 20px; margin: 14px 0 0; color: #59697c; font-size: 12px; }
+      #settings h2 { margin-top: 0; font-size: 16px; }
+      #currency-search { width: 100%; margin-bottom: 10px; }
+      #currency-list { max-height: 300px; overflow-y: auto; }
+      .currency-choice {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        padding: 7px 4px;
+        font-weight: normal;
+        cursor: pointer;
+      }
+      .currency-choice input {
+        appearance: auto;
+        flex: none;
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        padding: 0;
+        border-radius: 3px;
+      }
+      #settings-hint { margin: 12px 0 0; color: #59697c; font-size: 12px; }
     </style>
     <script src="popup.js" defer></script>
   </head>
   <body>
     <main>
-      <h1>Конвертер валют</h1>
-      <label for="amount">Сумма</label>
-      <div class="input-row">
-        <input id="amount" type="text" inputmode="decimal" placeholder="Например, 100" autocomplete="off" autofocus>
-        <select id="currency" aria-label="Исходная валюта">
-          <option value="RUB">RUB · ₽</option>
-          <option value="EUR">EUR · €</option>
-          <option value="USD">USD · $</option>
-          <option value="KZT">KZT · ₸</option>
-        </select>
+      <div class="header">
+        <h1>Конвертер валют</h1>
+        <button id="settings-button" class="icon-button" type="button" aria-label="Открыть настройки" aria-expanded="false" aria-controls="settings" title="Настройки">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 2h4l.6 2.1a8 8 0 0 1 1.5.9l2.1-.5 2 3.5-1.5 1.6a8 8 0 0 1 0 1.8l1.5 1.6-2 3.5-2.1-.5a8 8 0 0 1-1.5.9L14 19h-4l-.6-2.1a8 8 0 0 1-1.5-.9l-2.1.5-2-3.5 1.5-1.6a8 8 0 0 1 0-1.8L3.8 8l2-3.5 2.1.5a8 8 0 0 1 1.5-.9L10 2Z" transform="translate(0 1.5)"/>
+            <circle cx="12" cy="12" r="2.5"/>
+          </svg>
+        </button>
       </div>
-      <h2>В других валютах</h2>
-      <ul id="results" aria-live="polite"></ul>
-      <p id="status" role="status">Загрузка курсов…</p>
+      <section id="converter">
+        <label for="amount">Сумма</label>
+        <div class="input-row">
+          <input id="amount" type="text" inputmode="decimal" placeholder="Например, 100" autocomplete="off" autofocus>
+          <select id="currency" aria-label="Исходная валюта">
+            <option value="RUB">RUB · ₽</option>
+            <option value="EUR">EUR · €</option>
+            <option value="USD">USD · $</option>
+            <option value="KZT">KZT · ₸</option>
+          </select>
+        </div>
+        <h2>В других валютах</h2>
+        <ul id="results" aria-live="polite"></ul>
+        <p id="status" role="status">Загрузка курсов…</p>
+      </section>
+      <section id="settings" hidden>
+        <h2>Выберите валюты</h2>
+        <input id="currency-search" type="search" placeholder="Поиск по названию или коду" aria-label="Поиск валют">
+        <div id="currency-list"></div>
+        <p id="settings-hint" role="status">Загрузка списка валют…</p>
+      </section>
     </main>
   </body>
 </html>
