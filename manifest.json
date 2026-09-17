@@ -17,7 +17,7 @@
   "permissions": ["storage"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "currency-converter-cbr",
+      "id": "currency-converter-cbr@example.com",
       "data_collection_permissions": {
         "required": ["none"]
       }
