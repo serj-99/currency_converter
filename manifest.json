@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Конвертер валют",
+  "version": "1.0.0",
+  "description": "Конвертация рублей, евро, долларов США и тенге по онлайн-курсу.",
+  "action": {
+    "default_title": "Конвертер валют",
+    "default_popup": "popup.html",
+    "default_icon": "icon.svg"
+  },
+  "icons": {
+    "48": "icon.svg"
+  },
+  "host_permissions": [
+    "https://api.frankfurter.dev/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "currency-converter@example.com",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}
